@@ -1,4 +1,4 @@
-package com.example.mk_drawing
+package com.example.mkdrawing
 
 import io.flutter.embedding.android.FlutterActivity
 

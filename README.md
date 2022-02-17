@@ -1,6 +1,6 @@
-# mk_drawing
+# mkdrawing
 
-Drawing app for my son
+drawing app for my son
 
 ## Getting Started
 
