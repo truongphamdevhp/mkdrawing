@@ -16,13 +16,15 @@ class MyApp extends StatelessWidget {
 }
 
 class mkCustomBottomAppBar extends StatelessWidget {
-  const mkCustomBottomAppBar({
-    this.fabLocation = FloatingActionButtonLocation.endDocked,
-    this.shape = const CircularNotchedRectangle(),
-  });
+  const mkCustomBottomAppBar(
+      {required this.onTap,
+      this.fabLocation = FloatingActionButtonLocation.endDocked,
+      this.shape = const CircularNotchedRectangle()});
 
   final FloatingActionButtonLocation fabLocation;
   final NotchedShape? shape;
+
+  final Function onTap;
 
   static final List<FloatingActionButtonLocation> centerLocations =
       <FloatingActionButtonLocation>[
@@ -42,18 +44,24 @@ class mkCustomBottomAppBar extends StatelessWidget {
             IconButton(
               tooltip: 'Open navigation menu',
               icon: const Icon(Icons.menu),
-              onPressed: () {},
+              onPressed: () {
+                onTap.call('Open navigation menu');
+              },
             ),
             if (centerLocations.contains(fabLocation)) const Spacer(),
             IconButton(
               tooltip: 'Search',
               icon: const Icon(Icons.search),
-              onPressed: () {},
+              onPressed: () {
+                onTap.call('Search');
+              },
             ),
             IconButton(
               tooltip: 'Favorite',
               icon: const Icon(Icons.favorite),
-              onPressed: () {},
+              onPressed: () {
+                onTap.call('Search');
+              },
             ),
           ],
         ),
@@ -81,6 +89,10 @@ class _ExamplePageState extends State<ExamplePage> {
     controller.thickness = 5.0;
     controller.backgroundColor = Colors.white;
     return controller;
+  }
+
+  void onTab(String strVal) {
+    print(strVal);
   }
 
   @override
@@ -133,6 +145,7 @@ class _ExamplePageState extends State<ExamplePage> {
             )),
         body: new Center(child: new Painter(_controller)),
         bottomNavigationBar: mkCustomBottomAppBar(
+          onTap: this.onTab,
           shape: null,
         ),
       ),
