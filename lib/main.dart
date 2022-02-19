@@ -10,21 +10,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new ExamplePage(),
+      home: new HomePage(),
     );
   }
 }
 
 class mkCustomBottomAppBar extends StatelessWidget {
   const mkCustomBottomAppBar(
-      {required this.onTap,
+      {this.onTap,
       this.fabLocation = FloatingActionButtonLocation.endDocked,
       this.shape = const CircularNotchedRectangle()});
 
   final FloatingActionButtonLocation fabLocation;
   final NotchedShape? shape;
 
-  final Function onTap;
+  final Function? onTap;
 
   static final List<FloatingActionButtonLocation> centerLocations =
       <FloatingActionButtonLocation>[
@@ -41,28 +41,30 @@ class mkCustomBottomAppBar extends StatelessWidget {
         data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
         child: Row(
           children: <Widget>[
-            IconButton(
-              tooltip: 'Open navigation menu',
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                onTap.call('Open navigation menu');
-              },
-            ),
+            Spacer(),
             if (centerLocations.contains(fabLocation)) const Spacer(),
             IconButton(
               tooltip: 'Search',
               icon: const Icon(Icons.search),
               onPressed: () {
-                onTap.call('Search');
+                onTap?.call('Search');
               },
             ),
             IconButton(
               tooltip: 'Favorite',
               icon: const Icon(Icons.favorite),
               onPressed: () {
-                onTap.call('Search');
+                onTap?.call('favorite');
               },
             ),
+            IconButton(
+              tooltip: 'Favorite',
+              icon: const Icon(Icons.sd_storage),
+              onPressed: () {
+                onTap?.call('sd_storage');
+              },
+            ),
+            Spacer(),
           ],
         ),
       ),
@@ -70,12 +72,12 @@ class mkCustomBottomAppBar extends StatelessWidget {
   }
 }
 
-class ExamplePage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  _ExamplePageState createState() => new _ExamplePageState();
+  _HomePageState createState() => new _HomePageState();
 }
 
-class _ExamplePageState extends State<ExamplePage> {
+class _HomePageState extends State<HomePage> {
   bool _finished = false;
   PainterController _controller = _newController();
 
