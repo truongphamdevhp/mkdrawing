@@ -123,16 +123,18 @@ class _ExamplePageState extends State<ExamplePage> {
             onPressed: () => _show(_controller.finish(), context)),
       ];
     }
-    return new Scaffold(
-      appBar: new AppBar(
-          actions: actions,
-          bottom: new PreferredSize(
-            child: new DrawBar(_controller),
-            preferredSize: new Size(MediaQuery.of(context).size.width, 20.0),
-          )),
-      body: new Center(child: new Painter(_controller)),
-      bottomNavigationBar: mkCustomBottomAppBar(
-        shape: null,
+    return SafeArea(
+      child: new Scaffold(
+        appBar: new AppBar(
+            actions: actions,
+            bottom: new PreferredSize(
+              child: new DrawBar(_controller),
+              preferredSize: new Size(MediaQuery.of(context).size.width, 20.0),
+            )),
+        body: new Center(child: new Painter(_controller)),
+        bottomNavigationBar: mkCustomBottomAppBar(
+          shape: null,
+        ),
       ),
     );
   }
