@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mkdrawing/painter.dart';
+import 'package:mkdrawing/commanid.dart';
 
 void main() => runApp(new MyApp());
 
@@ -45,23 +46,16 @@ class mkCustomBottomAppBar extends StatelessWidget {
             if (centerLocations.contains(fabLocation)) const Spacer(),
             IconButton(
               tooltip: 'Search',
-              icon: const Icon(Icons.search),
+              icon: const Icon(Icons.undo),
               onPressed: () {
-                onTap?.call('Search');
+                onTap?.call(mkCommandID.UNDO);
               },
             ),
             IconButton(
-              tooltip: 'Favorite',
-              icon: const Icon(Icons.favorite),
+              tooltip: 'Clear all',
+              icon: const Icon(Icons.delete),
               onPressed: () {
-                onTap?.call('favorite');
-              },
-            ),
-            IconButton(
-              tooltip: 'Favorite',
-              icon: const Icon(Icons.sd_storage),
-              onPressed: () {
-                onTap?.call('sd_storage');
+                onTap?.call(mkCommandID.CLEAR_ALL);
               },
             ),
             Spacer(),
@@ -93,8 +87,21 @@ class _HomePageState extends State<HomePage> {
     return controller;
   }
 
-  void onTab(String strVal) {
-    print(strVal);
+  void onTab(mkCommandID id) {
+    switch (id) {
+      case mkCommandID.UNDO:
+        if (_controller.isEmpty) {
+          showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) => new Text('Nothing to undo'));
+        } else {
+          _controller.undo();
+        }
+        break;
+      case mkCommandID.CLEAR_ALL:
+        _controller.clear();
+        break;
+    }
   }
 
   @override
@@ -139,12 +146,12 @@ class _HomePageState extends State<HomePage> {
     }
     return SafeArea(
       child: new Scaffold(
-        appBar: new AppBar(
-            actions: actions,
-            bottom: new PreferredSize(
-              child: new DrawBar(_controller),
-              preferredSize: new Size(MediaQuery.of(context).size.width, 20.0),
-            )),
+        // appBar: new AppBar(
+        //     actions: actions,
+        //     bottom: new PreferredSize(
+        //       child: new DrawBar(_controller),
+        //       preferredSize: new Size(MediaQuery.of(context).size.width, 20.0),
+        //     )),
         body: new Center(child: new Painter(_controller)),
         bottomNavigationBar: mkCustomBottomAppBar(
           onTap: this.onTab,
