@@ -1,4 +1,7 @@
 enum mkCommandID {
   UNDO,
   CLEAR_ALL,
+  PEN_SIZE,
+  PEN_COLOR,
+  BACKGROUND_COLOR,
 }

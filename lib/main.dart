@@ -20,11 +20,12 @@ class mkCustomBottomAppBar extends StatelessWidget {
   const mkCustomBottomAppBar(
       {this.onTap,
       this.fabLocation = FloatingActionButtonLocation.endDocked,
-      this.shape = const CircularNotchedRectangle()});
+      this.shape = const CircularNotchedRectangle(),
+      this.drawBar});
 
   final FloatingActionButtonLocation fabLocation;
   final NotchedShape? shape;
-
+  final DrawBar? drawBar;
   final Function? onTap;
 
   static final List<FloatingActionButtonLocation> centerLocations =
@@ -40,25 +41,31 @@ class mkCustomBottomAppBar extends StatelessWidget {
       color: Colors.blue,
       child: IconTheme(
         data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-        child: Row(
-          children: <Widget>[
-            Spacer(),
-            if (centerLocations.contains(fabLocation)) const Spacer(),
-            IconButton(
-              tooltip: 'Search',
-              icon: const Icon(Icons.undo),
-              onPressed: () {
-                onTap?.call(mkCommandID.UNDO);
-              },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            drawBar!,
+            Row(
+              children: <Widget>[
+                Spacer(),
+                if (centerLocations.contains(fabLocation)) const Spacer(),
+                IconButton(
+                  tooltip: 'Undo',
+                  icon: const Icon(Icons.undo),
+                  onPressed: () {
+                    onTap?.call(mkCommandID.UNDO);
+                  },
+                ),
+                IconButton(
+                  tooltip: 'Clear all',
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    onTap?.call(mkCommandID.CLEAR_ALL);
+                  },
+                ),
+                Spacer(),
+              ],
             ),
-            IconButton(
-              tooltip: 'Clear all',
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                onTap?.call(mkCommandID.CLEAR_ALL);
-              },
-            ),
-            Spacer(),
           ],
         ),
       ),
@@ -91,15 +98,22 @@ class _HomePageState extends State<HomePage> {
     switch (id) {
       case mkCommandID.UNDO:
         if (_controller.isEmpty) {
-          showModalBottomSheet(
-              context: context,
-              builder: (BuildContext context) => new Text('Nothing to undo'));
+          return;
         } else {
           _controller.undo();
         }
         break;
       case mkCommandID.CLEAR_ALL:
         _controller.clear();
+        break;
+      case mkCommandID.PEN_SIZE:
+        // TODO: Handle this case.
+        break;
+      case mkCommandID.PEN_COLOR:
+        // TODO: Handle this case.
+        break;
+      case mkCommandID.BACKGROUND_COLOR:
+        // TODO: Handle this case.
         break;
     }
   }
@@ -145,17 +159,18 @@ class _HomePageState extends State<HomePage> {
       ];
     }
     return SafeArea(
-      child: new Scaffold(
+      child: Scaffold(
         // appBar: new AppBar(
         //     actions: actions,
         //     bottom: new PreferredSize(
         //       child: new DrawBar(_controller),
         //       preferredSize: new Size(MediaQuery.of(context).size.width, 20.0),
         //     )),
-        body: new Center(child: new Painter(_controller)),
+        body: Center(child: new Painter(_controller)),
         bottomNavigationBar: mkCustomBottomAppBar(
           onTap: this.onTab,
           shape: null,
+          drawBar: DrawBar(_controller),
         ),
       ),
     );
