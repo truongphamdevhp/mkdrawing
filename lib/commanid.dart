@@ -4,4 +4,6 @@ enum mkCommandID {
   PEN_SIZE,
   PEN_COLOR,
   BACKGROUND_COLOR,
+  EXPAND_TOOL,
+  RESET_ALL,
 }

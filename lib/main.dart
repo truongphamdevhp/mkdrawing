@@ -16,54 +16,62 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class mkCustomBottomAppBar extends StatelessWidget {
-  const mkCustomBottomAppBar(
-      {this.onTap,
-      this.fabLocation = FloatingActionButtonLocation.endDocked,
-      this.shape = const CircularNotchedRectangle(),
-      this.drawBar});
-
-  final FloatingActionButtonLocation fabLocation;
-  final NotchedShape? shape;
+class mkCustomBottomAppBar extends StatefulWidget {
+  const mkCustomBottomAppBar({this.onTap, this.drawBar});
   final DrawBar? drawBar;
   final Function? onTap;
 
-  static final List<FloatingActionButtonLocation> centerLocations =
-      <FloatingActionButtonLocation>[
-    FloatingActionButtonLocation.centerDocked,
-    FloatingActionButtonLocation.centerFloat,
-  ];
+  _mkCustomBottomAppBarState createState() => new _mkCustomBottomAppBarState();
+}
+
+class _mkCustomBottomAppBarState extends State<mkCustomBottomAppBar> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      shape: shape,
       color: Colors.blue,
       child: IconTheme(
         data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            drawBar!,
+            if (widget.drawBar != null) widget.drawBar!,
             Row(
               children: <Widget>[
+                IconButton(
+                  tooltip: 'Undo',
+                  icon: const Icon(Icons.unsubscribe_sharp),
+                  onPressed: () {
+                    widget.onTap?.call(mkCommandID.EXPAND_TOOL);
+                  },
+                ),
                 Spacer(),
-                if (centerLocations.contains(fabLocation)) const Spacer(),
                 IconButton(
                   tooltip: 'Undo',
                   icon: const Icon(Icons.undo),
                   onPressed: () {
-                    onTap?.call(mkCommandID.UNDO);
+                    widget.onTap?.call(mkCommandID.UNDO);
                   },
                 ),
                 IconButton(
                   tooltip: 'Clear all',
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    onTap?.call(mkCommandID.CLEAR_ALL);
+                    widget.onTap?.call(mkCommandID.CLEAR_ALL);
                   },
                 ),
                 Spacer(),
+                IconButton(
+                  tooltip: 'reset all',
+                  icon: const Icon(Icons.fiber_new),
+                  onPressed: () {
+                    widget.onTap?.call(mkCommandID.RESET_ALL);
+                  },
+                ),
               ],
             ),
           ],
@@ -81,7 +89,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _finished = false;
   PainterController _controller = _newController();
-
+  bool _expanded = true;
   @override
   void initState() {
     super.initState();
@@ -114,6 +122,14 @@ class _HomePageState extends State<HomePage> {
         break;
       case mkCommandID.BACKGROUND_COLOR:
         // TODO: Handle this case.
+        break;
+      case mkCommandID.EXPAND_TOOL:
+        setState(() {
+          _expanded = !_expanded;
+        });
+        break;
+      case mkCommandID.RESET_ALL:
+        _show(_controller.finish(), context);
         break;
     }
   }
@@ -169,8 +185,7 @@ class _HomePageState extends State<HomePage> {
         body: Center(child: new Painter(_controller)),
         bottomNavigationBar: mkCustomBottomAppBar(
           onTap: this.onTab,
-          shape: null,
-          drawBar: DrawBar(_controller),
+          drawBar: _expanded ? DrawBar(_controller) : null,
         ),
       ),
     );
