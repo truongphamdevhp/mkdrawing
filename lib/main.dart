@@ -45,7 +45,7 @@ class _mkCustomBottomAppBarState extends State<mkCustomBottomAppBar> {
                 Spacer(),
                 IconButton(
                   tooltip: 'Expand',
-                  icon: const Icon(Icons.unsubscribe_sharp),
+                  icon: const Icon(Icons.arrow_upward),
                   onPressed: () {
                     widget.onTap?.call(mkCommandID.EXPAND_TOOL);
                   },

@@ -51,6 +51,7 @@ class _PainterState extends State<Painter> {
         onPanStart: _onPanStart,
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
+        onTapDown: _onTab,
       );
     }
     return new Container(
@@ -75,6 +76,15 @@ class _PainterState extends State<Painter> {
   }
 
   void _onPanEnd(DragEndDetails end) {
+    widget.painterController._pathHistory.endCurrent();
+    widget.painterController._notifyListeners();
+  }
+
+  void _onTab(TapDownDetails update) {
+    Offset pos = (context.findRenderObject() as RenderBox)
+        .globalToLocal(update.globalPosition);
+    widget.painterController._pathHistory.add(pos);
+    widget.painterController._pathHistory.updateCurrent(pos);
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
   }
