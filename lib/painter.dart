@@ -314,6 +314,15 @@ class PainterController extends ChangeNotifier {
     }
   }
 
+  void resetDefault() {
+    _drawColor = new Color.fromARGB(255, 0, 0, 0);
+    _backgroundColor = new Color.fromARGB(255, 255, 255, 255);
+    _eraseMode = false;
+    _thickness = 5.0;
+    clear();
+    _updatePaint();
+  }
+
   /// Finishes drawing and returns the rendered [PictureDetails] of the drawing.
   /// The drawing is cached and on subsequent calls to this method, the cached
   /// drawing is returned.

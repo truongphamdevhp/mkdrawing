@@ -73,7 +73,7 @@ class _mkCustomBottomAppBarState extends State<mkCustomBottomAppBar> {
                 ),
                 IconButton(
                   tooltip: 'reset all',
-                  icon: const Icon(Icons.fiber_new),
+                  icon: const Icon(Icons.restart_alt),
                   onPressed: () {
                     widget.onTap?.call(mkCommandID.RESET_ALL);
                   },
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
         });
         break;
       case mkCommandID.RESET_ALL:
-        _show(_controller.finish(), context);
+        _controller.resetDefault();
         break;
       case mkCommandID.REDO:
         _controller.redo();
