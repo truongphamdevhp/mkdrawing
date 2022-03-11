@@ -242,11 +242,16 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class DrawBar extends StatelessWidget {
+class DrawBar extends StatefulWidget {
   final PainterController _controller;
 
   DrawBar(this._controller);
 
+  @override
+  State<DrawBar> createState() => _DrawBarState();
+}
+
+class _DrawBarState extends State<DrawBar> {
   @override
   Widget build(BuildContext context) {
     return new Row(
@@ -256,9 +261,9 @@ class DrawBar extends StatelessWidget {
             builder: (BuildContext context, StateSetter setState) {
           return new Container(
               child: new Slider(
-            value: _controller.thickness,
+            value: widget._controller.thickness,
             onChanged: (double value) => setState(() {
-              _controller.thickness = value;
+              widget._controller.thickness = value;
             }),
             min: dMinSliderVal,
             max: dMaxSlideVal,
@@ -268,19 +273,21 @@ class DrawBar extends StatelessWidget {
         new StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return new RotatedBox(
-              quarterTurns: _controller.eraseMode ? 2 : 0,
+              quarterTurns: widget._controller.eraseMode ? 2 : 0,
               child: IconButton(
                   icon: new Icon(Icons.create),
-                  tooltip: (_controller.eraseMode ? 'Disable' : 'Enable') +
-                      ' eraser',
+                  tooltip:
+                      (widget._controller.eraseMode ? 'Disable' : 'Enable') +
+                          ' eraser',
                   onPressed: () {
                     setState(() {
-                      _controller.eraseMode = !_controller.eraseMode;
+                      widget._controller.eraseMode =
+                          !widget._controller.eraseMode;
                     });
                   }));
         }),
-        new ColorPickerButton(_controller, false),
-        new ColorPickerButton(_controller, true),
+        new ColorPickerButton(widget._controller, false),
+        new ColorPickerButton(widget._controller, true),
       ],
     );
   }
