@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mkdrawing/painter.dart';
 import 'package:mkdrawing/commanid.dart';
+import 'package:mkdrawing/mkheader.dart';
 
 void main() => runApp(new MyApp());
 
@@ -104,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   static PainterController _newController() {
     PainterController controller = new PainterController();
-    controller.thickness = 5.0;
+    controller.thickness = dDefaultThickness;
     controller.backgroundColor = Colors.white;
     return controller;
   }
@@ -259,8 +260,8 @@ class DrawBar extends StatelessWidget {
             onChanged: (double value) => setState(() {
               _controller.thickness = value;
             }),
-            min: 1.0,
-            max: 20.0,
+            min: dMinSliderVal,
+            max: dMaxSlideVal,
             activeColor: Colors.white,
           ));
         })),

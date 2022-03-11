@@ -4,7 +4,7 @@ library painter;
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui';
-
+import 'package:mkdrawing/mkheader.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/widgets.dart' hide Image;
 
@@ -216,11 +216,11 @@ class PictureDetails {
 
 /// Used with a [Painter] widget to control drawing.
 class PainterController extends ChangeNotifier {
-  Color _drawColor = new Color.fromARGB(255, 0, 0, 0);
-  Color _backgroundColor = new Color.fromARGB(255, 255, 255, 255);
+  Color _drawColor = clPenDefault;
+  Color _backgroundColor = clBackgroundDefault;
   bool _eraseMode = false;
 
-  double _thickness = 1.0;
+  double _thickness = dDefaultThickness;
   PictureDetails? _cached;
   _PathHistory _pathHistory;
   ValueGetter<Size>? _widgetFinish;
@@ -315,10 +315,10 @@ class PainterController extends ChangeNotifier {
   }
 
   void resetDefault() {
-    _drawColor = new Color.fromARGB(255, 0, 0, 0);
-    _backgroundColor = new Color.fromARGB(255, 255, 255, 255);
+    _drawColor = clPenDefault;
+    _backgroundColor = clBackgroundDefault;
     _eraseMode = false;
-    _thickness = 5.0;
+    _thickness = dDefaultThickness;
     clear();
     _updatePaint();
   }
