@@ -23,7 +23,7 @@ class Painter extends StatefulWidget {
 
 class _PainterState extends State<Painter> {
   bool _finished = false;
-
+  bool _bPanDown = false;
   @override
   void initState() {
     super.initState();
@@ -51,7 +51,7 @@ class _PainterState extends State<Painter> {
         onPanStart: _onPanStart,
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
-        onTapDown: _onTab,
+        onPanDown: _onPanDown,
       );
     }
     return new Container(
@@ -64,7 +64,11 @@ class _PainterState extends State<Painter> {
   void _onPanStart(DragStartDetails start) {
     Offset pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(start.globalPosition);
-    widget.painterController._pathHistory.add(pos);
+    if (!_bPanDown) {
+      widget.painterController._pathHistory.add(pos);
+    } else {
+      widget.painterController._pathHistory.updateCurrent(pos);
+    }
     widget.painterController._notifyListeners();
   }
 
@@ -78,15 +82,15 @@ class _PainterState extends State<Painter> {
   void _onPanEnd(DragEndDetails end) {
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
+    _bPanDown = false;
   }
 
-  void _onTab(TapDownDetails update) {
+  void _onPanDown(DragDownDetails update) {
     Offset pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(update.globalPosition);
     widget.painterController._pathHistory.add(pos);
-    widget.painterController._pathHistory.updateCurrent(pos);
-    widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
+    _bPanDown = true;
   }
 }
 
