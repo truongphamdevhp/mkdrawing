@@ -24,6 +24,7 @@ class Painter extends StatefulWidget {
 class _PainterState extends State<Painter> {
   bool _finished = false;
   bool _bPanDown = false;
+  Offset? m_ptPanDown;
   @override
   void initState() {
     super.initState();
@@ -52,6 +53,7 @@ class _PainterState extends State<Painter> {
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
         onPanDown: _onPanDown,
+        onTapUp: _onTapUp,
       );
     }
     return new Container(
@@ -88,9 +90,23 @@ class _PainterState extends State<Painter> {
   void _onPanDown(DragDownDetails update) {
     Offset pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(update.globalPosition);
+    m_ptPanDown = pos;
     widget.painterController._pathHistory.add(pos);
     widget.painterController._notifyListeners();
     _bPanDown = true;
+  }
+
+  void _onTapUp(TapUpDetails tapup) {
+    Offset pos = (context.findRenderObject() as RenderBox)
+        .globalToLocal(tapup.globalPosition);
+    if (m_ptPanDown != null &&
+        m_ptPanDown!.dx.round() == pos.dx.round() &&
+        m_ptPanDown!.dy.round() == pos.dy.round()) {
+      double thickness = widget.painterController._thickness;
+      Rect rcCirle = Rect.fromLTWH(pos.dx, pos.dy, thickness, thickness);
+      widget.painterController._pathHistory.addCircle(rcCirle);
+      widget.painterController._notifyListeners();
+    }
   }
 }
 
@@ -174,11 +190,16 @@ class _PathHistory {
     _inDrag = false;
   }
 
+  void addCircle(Rect rcCircle) {
+    Path path = new Path();
+    path.addOval(rcCircle);
+    _paths.add(new MapEntry<Path, Paint>(path, currentPaint));
+  }
+
   void draw(Canvas canvas, Size size) {
     canvas.saveLayer(Offset.zero & size, Paint());
     for (MapEntry<Path, Paint> path in _paths) {
-      Paint p = path.value;
-      canvas.drawPath(path.key, p);
+      canvas.drawPath(path.key, path.value);
     }
     canvas.drawRect(
         new Rect.fromLTWH(0.0, 0.0, size.width, size.height), _backgroundPaint);
