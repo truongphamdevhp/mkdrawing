@@ -25,6 +25,7 @@ class _PainterState extends State<Painter> {
   bool _finished = false;
   bool _bPanDown = false;
   Offset? m_ptPanDown;
+  Offset? m_ptCurrentPos;
   @override
   void initState() {
     super.initState();
@@ -53,7 +54,6 @@ class _PainterState extends State<Painter> {
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
         onPanDown: _onPanDown,
-        onTapUp: _onTapUp,
       );
     }
     return new Container(
@@ -66,6 +66,7 @@ class _PainterState extends State<Painter> {
   void _onPanStart(DragStartDetails start) {
     Offset pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(start.globalPosition);
+    m_ptCurrentPos = pos;
     if (!_bPanDown) {
       widget.painterController._pathHistory.add(pos);
     } else {
@@ -77,11 +78,23 @@ class _PainterState extends State<Painter> {
   void _onPanUpdate(DragUpdateDetails update) {
     Offset pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(update.globalPosition);
+    m_ptCurrentPos = pos;
     widget.painterController._pathHistory.updateCurrent(pos);
     widget.painterController._notifyListeners();
   }
 
   void _onPanEnd(DragEndDetails end) {
+    Offset pos = m_ptCurrentPos!;
+    if (m_ptPanDown != null &&
+        m_ptPanDown!.dx.round() == pos.dx.round() &&
+        m_ptPanDown!.dy.round() == pos.dy.round()) {
+      double thickness = widget.painterController._thickness;
+      Rect rcCirle = Rect.fromLTWH(pos.dx, pos.dy, thickness, thickness);
+      widget.painterController._pathHistory.addCircle(rcCirle);
+      widget.painterController._pathHistory.endCurrent();
+      widget.painterController._notifyListeners();
+      return;
+    }
     widget.painterController._pathHistory.endCurrent();
     widget.painterController._notifyListeners();
     _bPanDown = false;
@@ -94,19 +107,6 @@ class _PainterState extends State<Painter> {
     widget.painterController._pathHistory.add(pos);
     widget.painterController._notifyListeners();
     _bPanDown = true;
-  }
-
-  void _onTapUp(TapUpDetails tapup) {
-    Offset pos = (context.findRenderObject() as RenderBox)
-        .globalToLocal(tapup.globalPosition);
-    if (m_ptPanDown != null &&
-        m_ptPanDown!.dx.round() == pos.dx.round() &&
-        m_ptPanDown!.dy.round() == pos.dy.round()) {
-      double thickness = widget.painterController._thickness;
-      Rect rcCirle = Rect.fromLTWH(pos.dx, pos.dy, thickness, thickness);
-      widget.painterController._pathHistory.addCircle(rcCirle);
-      widget.painterController._notifyListeners();
-    }
   }
 }
 
