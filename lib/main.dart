@@ -97,7 +97,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _finished = false;
   PainterController _controller = _newController();
-  bool _expanded = false;
+  bool _expanded = true;
   @override
   void initState() {
     super.initState();
